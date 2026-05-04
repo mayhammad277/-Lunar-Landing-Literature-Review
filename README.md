@@ -136,13 +136,13 @@ Chang’e‑6 (CNSA, June 2024): High‑precision visual positioning on the luna
 2.2.3 Crater Detection & Identification
 Modern crater‑based navigation uses deep‑learning detectors:
 
-Detector	Dataset	Key Performance	Source
-Mask R‑CNN (Chang’e‑5)	Chang’e‑5 Landing Camera	0.701 IoU for ellipse regression; robust to off‑nadir views	
-YOLOv8	Chandrayaan‑2 OHRC	Outperforms Mask R‑CNN in both accuracy and speed	
-STELLA (Mask R‑CNN + descriptor‑less matching)	CRESENT‑365 (15,283 images)	Metre‑level position, sub‑degree attitude accuracy across varying illumination and viewing angles	
-YOLO family (JAXA/NASA benchmark)	1.2M known craters (Blender‑rendered)	Evaluated on LS1046 Space CPU and Google Coral TPU for flight readiness	
-LU5M812TGT	~5M craters ≥0.4 km	First comprehensive AI‑driven global lunar crater catalog	
-PECAN (Crater Identification by Perspective Cone Alignment) provides an alternative geometry‑based approach for matching observed craters to a known catalogue rather than relying solely on ML descriptors.
+- Detector	Dataset	Key Performance	Source
+- Mask R‑CNN (Chang’e‑5)	Chang’e‑5 Landing Camera	0.701 IoU for ellipse regression; robust to off‑nadir views	
+- YOLOv8	Chandrayaan‑2 OHRC	Outperforms Mask R‑CNN in both accuracy and speed	
+- STELLA (Mask R‑CNN + descriptor‑less matching)	CRESENT‑365 (15,283 images)	Metre‑level position, sub‑degree attitude accuracy across varying illumination and viewing angles	
+- YOLO family (JAXA/NASA benchmark)	1.2M known craters (Blender‑rendered)	Evaluated on LS1046 Space CPU and Google Coral TPU for flight readiness	
+- LU5M812TGT	~5M craters ≥0.4 km	First comprehensive AI‑driven global lunar crater catalog
+- PECAN (Crater Identification by Perspective Cone Alignment) provides an alternative geometry‑based approach for matching observed craters to a known catalogue rather than relying solely on ML descriptors.
 
 2.2.4 Terrain Relative Navigation (TRN)
 TRN matches real‑time descent imagery to a pre‑loaded reference map. Recent advances:
@@ -157,22 +157,28 @@ The mathematical core of lunar landing guidance. The standard formulation: minim
 2.3.1 Convex Optimization & Successive Convexification
 The dominant paradigm for real‑time onboard guidance is (successive) convexification — approximating the non‑convex optimal control problem as a sequence of convex sub‑problems (typically Second‑Order Cone Programs, SOCPs) solvable in milliseconds.
 
-Foundational work:
+### Foundational work:
 
 • Açıkmeşe & Ploen (2007): First convex programming approach to powered descent guidance (originally for Mars) — the seminal paper.
 • Açıkmeşe et al. (2013): Lossless convexification of non‑convex control bound and pointing constraints — proved that the convex relaxation is exact under mild conditions.
 • Szmuk et al. (2018–2019): Successive convexification (SCvx) for real‑time 6‑DoF powered descent with state‑triggered constraints — handles thrust bound, pointing, and glide‑slope constraints.
 
-Recent advances (2024–2026):
+###  Recent advances (2024–2026):
 
-• SCP for 6‑DoF PDG with Compound State‑Triggered Constraints (2025): Extends SCvx to continuous‑time satisfaction of compound logical specifications (e.g., “activate sensor X when altitude < Y AND horizontal distance < Z”).
-• Convex Optimization‑Based 6‑DoF Guidance (2025): Novel two‑stage method — first solves fuel‑optimal 3‑DoF via convex optimization, then a convex MPC minimizes thrust direction deviation (instead of conventional attitude errors) for 6‑DoF alignment. Outperforms quaternion feedback control.
-• Integrated Lander‑Propulsion‑GNC Framework (2026): Successive convexification unified with propulsion architecture (throttle‑ratio, dead‑zone, gimbal authority). Achieves sub‑50‑metre landing precision in Monte Carlo under realistic perturbations. Demonstrates the fundamental coupling between throttle‑ratio, pointing authority, and surface gravity.
-• Fault‑Tolerant Convex Guidance (2025): Lossless convexification extended for actuator fault scenarios during lunar soft landing.
-• CTICPG (Constant Thrust Adaptive Convex Programming Guidance): For unthrottled engines, iteratively solves the propellant‑optimal guidance problem.
-• Neural‑Network‑Based Fuel‑Optimal PDG (2024): Uses neural networks to approximate the optimal solution, trading formal guarantees for inference speed.
-• Chandrayaan‑3 Convex Decision Boundary (2024): Convex optimization technique to compute feasibility boundaries for the powered descent phase — used operationally for the successful Chandrayaan‑3 landing.
-• Navigation‑Optimal Convex Guidance (2024): Convexifies the navigation error variance alongside the guidance objective, accounting for TRN accuracy degradation during descent.
+| Year | Approach / Title | Key Contribution |
+|------|------------------|------------------|
+| 2025 | SCP for 6‑DoF PDG with Compound State‑Triggered Constraints | Extends successive convexification to continuously satisfy logical combinations of triggers (e.g., “activate sensor X when altitude < Y **AND** horizontal distance < Z”) |
+| 2025 | Convex Optimization‑Based 6‑DoF Guidance | Two‑stage method: (1) fuel‑optimal 3‑DoF solution via convex optimisation, (2) convex MPC that minimises **thrust‑direction deviation** (instead of attitude error) for 6‑DoF alignment; outperforms quaternion feedback |
+| 2026 | Integrated Lander‑Propulsion‑GNC Framework | Unifies successive convexification with propulsion architecture (throttle ratio, dead‑zone, gimbal authority); achieves **sub‑50 m landing precision** in realistic Monte Carlo simulations; reveals fundamental coupling between throttle ratio, pointing authority, and surface gravity |
+| 2025 | Fault‑Tolerant Convex Guidance | Lossless convexification extended to handle actuator fault scenarios during lunar soft landing |
+| – | CTICPG (Constant Thrust Adaptive Convex Programming Guidance) | Iteratively solves the propellant‑optimal guidance problem for engines that **cannot be throttled** |
+| 2024 | Neural‑Network‑Based Fuel‑Optimal PDG | Uses a neural network to approximate the optimal solution, trading formal guarantees for **inference speed** |
+| 2024 | Chandrayaan‑3 Convex Decision Boundary | Convex optimisation technique to compute **feasibility boundaries** for the powered descent phase — used operationally in the successful Chandrayaan‑3 landing |
+| 2024 | Navigation‑Optimal Convex Guidance | Convexifies the **navigation error variance** together with the guidance objective, explicitly accounting for TRN accuracy degradation during descent |
+
+
+
+### Tools
 
 | Tool | Description | Source |
 |------|-------------|--------|
@@ -225,7 +231,7 @@ Cowan et al. (2025) — ESA Advanced Concepts Team + ispace:
 | **JAXA/NASA Blender Dataset** | 1.2M craters | Rendered with ground‑truth bounding boxes; flight‑hardware evaluated | |
 | **NAC CDR Lunar Crater Dataset** | ~20,000 craters | Crater detection studies from LRO NAC images | GitHub |
 
-
+### Relevant Githubs 
 
 | Repository | Description | Stars | Language |
 |------------|-------------|-------|----------|
